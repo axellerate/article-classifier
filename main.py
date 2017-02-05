@@ -1,4 +1,4 @@
-from neural_network.neural_network import *
+from neural_network.preprocessor import Preprocessor
 from wikipedia_parser.wikipedia_parser import WikipediaParser
 
 # define possible classifiers
@@ -18,4 +18,5 @@ def classify(array):
 			return classifiers[i]
 	return classifiers[-1]
 
-wikipedia_parser.fill_all_data_files()
+preprocessor = Preprocessor()
+print(preprocessor.create_lexicon())
