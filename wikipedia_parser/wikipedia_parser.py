@@ -22,6 +22,9 @@ class WikipediaParser:
 	def get_air_training_pages(self):
 		return self.training_pages['air-pages']
 
+	def get_random_text_training_pages(self):
+		return self.training_pages['random-pages']
+
 	def fill_polar_data(self):
 		os.remove('data/polar_data.txt')
 		polar_pages = self.get_polar_training_pages()
@@ -32,6 +35,7 @@ class WikipediaParser:
 			data += self.get_page(page).content
 		polar_file.write(data)
 		polar_file.close()
+		print("Polar text data loaded.")
 		return len(polar_pages)
 
 	def fill_forests_data(self):
@@ -44,6 +48,7 @@ class WikipediaParser:
 			data += self.get_page(page).content
 		forests_file.write(data)
 		forests_file.close()
+		print("Forests text data loaded.")
 		return len(forests_pages)
 
 	def fill_oceans_data(self):
@@ -56,6 +61,7 @@ class WikipediaParser:
 			data += self.get_page(page).content
 		oceans_file.write(data)
 		oceans_file.close()
+		print("Oceans text data loaded.")
 		return len(oceans_pages)
 
 	def fill_air_data(self):
@@ -68,7 +74,21 @@ class WikipediaParser:
 			data += self.get_page(page).content
 		air_file.write(data)
 		air_file.close()
+		print("Air text data loaded.")
 		return len(air_pages)
+
+	def fill_random_text_data(self):
+		os.remove('data/random_text_data.txt')
+		random_text_pages = self.get_random_text_training_pages()
+		random_text_file = open('data/random_text_data.txt', 'w')
+		data = ""
+		for page in random_text_pages:
+			print(self.get_page(page).title)
+			data += self.get_page(page).content
+		random_text_file.write(data)
+		random_text_file.close()
+		print("Random text data loaded.")
+		return len(random_text_pages)
 
 	def fill_all_data_files(self):
 		file_count = 0
@@ -76,6 +96,7 @@ class WikipediaParser:
 		file_count += self.fill_forests_data()
 		file_count += self.fill_oceans_data()
 		file_count += self.fill_air_data()
+		file_count += self.fill_random_text_data()
 		print("All {} data files have been successfully filled.".format(file_count))
 
 	def get_page(self,page):
