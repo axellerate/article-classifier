@@ -1,4 +1,5 @@
 import nltk, random, pickle
+from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
 from nltk.stem import WordNetLemmatizer
 import numpy as np
@@ -30,10 +31,12 @@ class Preprocessor:
 					all_words = word_tokenize(line.lower())
 					lexicon += list(all_words)
 		lexicon = [self.lemmatizer.lemmatize(i) for i in lexicon]
+		stop_words = set(stopwords.words('english'))
+		lexicon = [word for word in lexicon if word not in stop_words]
 		word_count = Counter(lexicon)
 		result = []
 		for w in word_count:
-			if 1000 > word_count[w] > 50:
+			if 1000 > word_count[w] > 10:
 				result.append(w)
 		self.lexicon = result
 		print("Lexicon of size {} successfully created".format(len(self.lexicon)))
@@ -81,13 +84,15 @@ class Preprocessor:
 
 		print("Testing size: {}".format(testing_size))
 
-		train_x = list(features[:,0][:-testing_size])
-		train_y = list(features[:,1][:-testing_size])
+		training_word_vectors = list(features[:,0][:-testing_size])
+		train_labels = list(features[:,1][:-testing_size])
 
-		test_x = list(features[:,0][-testing_size:])
-		test_y = list(features[:,1][-testing_size:])
+		testing_word_vectors = list(features[:,0][-testing_size:])
+		testing_labels = list(features[:,1][-testing_size:])
 
-		return train_x,train_y,test_x,test_y
+		print("Training data length: ",len(training_word_vectors))
+		print("Testing data length: ",len(testing_word_vectors))
+		return training_word_vectors,train_labels,testing_word_vectors,testing_labels
 
 
 
