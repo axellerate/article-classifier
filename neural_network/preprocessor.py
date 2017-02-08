@@ -33,12 +33,14 @@ class Preprocessor:
 		lexicon = [self.lemmatizer.lemmatize(i) for i in lexicon]
 		stop_words = set(stopwords.words('english'))
 		lexicon = [word for word in lexicon if word not in stop_words]
+		lexicon = [word for word in lexicon if word.isalpha()]
 		word_count = Counter(lexicon)
 		result = []
 		for w in word_count:
-			if 1000 > word_count[w] > 10:
+			if 750 > word_count[w] > 10:
 				result.append(w)
 		self.lexicon = result
+		print(result)
 		print("Lexicon of size {} successfully created".format(len(self.lexicon)))
 		return self.lexicon
 

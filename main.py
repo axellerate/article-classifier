@@ -21,11 +21,12 @@ training_word_vectors,training_labels,testing_word_vectors,testing_labels = prep
 
 batch_size = 100
 
-n_nodes_hl1 = 200
-n_nodes_hl2 = 200
-n_nodes_hl3 = 200
+n_nodes_hl1 = 100
 
 n_classes = 5 # Example: [1,0,0,0,0] == 'polar'
+
+test = training_word_vectors[50]
+answer = training_labels[50]
 
 x = tf.placeholder('float', [None,len(training_word_vectors[0])])
 y = tf.placeholder('float')
@@ -40,13 +41,7 @@ def neural_network_model(data):
 	hidden_layer_1 = {'weights':tf.Variable(tf.random_normal([len(training_word_vectors[0]), n_nodes_hl1])),
 					  'biases':tf.Variable(tf.random_normal([n_nodes_hl1]))}
 
-	hidden_layer_2 = {'weights':tf.Variable(tf.random_normal([n_nodes_hl1, n_nodes_hl2])),
-					  'biases':tf.Variable(tf.random_normal([n_nodes_hl2]))}
-
-	hidden_layer_3 = {'weights':tf.Variable(tf.random_normal([n_nodes_hl2, n_nodes_hl3])),
-					  'biases':tf.Variable(tf.random_normal([n_nodes_hl3]))}
-
-	output_layer = {'weights':tf.Variable(tf.random_normal([n_nodes_hl3, n_classes])),
+	output_layer = {'weights':tf.Variable(tf.random_normal([n_nodes_hl1, n_classes])),
 					'biases':tf.Variable(tf.random_normal([n_classes]))}
 
 	# (input_data * weights) + biases
@@ -54,13 +49,7 @@ def neural_network_model(data):
 	layer_1 = tf.add(tf.matmul(data,hidden_layer_1['weights']),hidden_layer_1['biases'])
 	layer_1 = tf.nn.relu(layer_1)
 
-	layer_2 = tf.add(tf.matmul(layer_1,hidden_layer_2['weights']),hidden_layer_2['biases'])
-	layer_2 = tf.nn.relu(layer_2)
-
-	layer_3 = tf.add(tf.matmul(layer_2,hidden_layer_3['weights']),hidden_layer_3['biases'])
-	layer_3 = tf.nn.relu(layer_3)
-
-	output = tf.matmul(layer_3, output_layer['weights']) + output_layer['biases']
+	output = tf.matmul(layer_1, output_layer['weights']) + output_layer['biases']
 
 	return output
 
@@ -72,7 +61,7 @@ def train_neural_network(x):
 
 	optimizer = tf.train.AdamOptimizer().minimize(cost)
 
-	num_of_epochs = 20
+	num_of_epochs = 40
 
 	with tf.Session() as sess:
 		sess.run(tf.global_variables_initializer())
@@ -91,7 +80,7 @@ def train_neural_network(x):
 				_,c = sess.run([optimizer,cost], feed_dict={x:batch_x, y:batch_y})
 				epoch_loss += c
 				i += batch_size
-			print('Epoch', epoch, 'completed out of', num_of_epochs, 'loss', epoch_loss)
+			print('Epoch', epoch+1, 'completed out of', num_of_epochs, 'loss', epoch_loss)
 		correct = tf.equal(tf.argmax(prediction,1), tf.argmax(y,1))
 		accuracy = tf.reduce_mean(tf.cast(correct,'float'))
 
