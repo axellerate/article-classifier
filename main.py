@@ -21,6 +21,7 @@ training_word_vectors,training_labels,testing_word_vectors,testing_labels = prep
 
 batch_size = 100
 
+# play around with number of neurons
 n_nodes_hl1 = 100
 
 n_classes = 5 # Example: [1,0,0,0,0] == 'polar'
@@ -59,7 +60,7 @@ def train_neural_network(x):
 
 	cost = tf.reduce_mean( tf.nn.softmax_cross_entropy_with_logits(prediction, y) )
 
-	optimizer = tf.train.AdamOptimizer().minimize(cost)
+	optimizer = tf.train.AdamOptimizer(0.01).minimize(cost)
 
 	num_of_epochs = 40
 
